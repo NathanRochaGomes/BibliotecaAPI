@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "loans")
-public class loan {
+public class Loan {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -22,7 +22,7 @@ public class loan {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "book_id", nullable = false)
 	@JsonIgnoreProperties("loans")
-	private books book;
+	private Books book;
 
 	public UUID getId() {
 		return id;
@@ -32,11 +32,11 @@ public class loan {
 		this.id = id;
 	}
 
-	public books getBook() {
+	public Books getBook() {
 		return book;
 	}
 
-	public void setBook(books book) {
+	public void setBook(Books book) {
 		this.book = book;
 	}
 }
