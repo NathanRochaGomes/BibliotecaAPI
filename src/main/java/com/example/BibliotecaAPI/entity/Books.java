@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "books")
-public class books {
+public class Books {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,10 +29,10 @@ public class books {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", nullable = false)
     @JsonIgnoreProperties("books")
-    private author author;
+    private Author author;
 
     @OneToMany(mappedBy = "book")
-    private List<loan> loans = new ArrayList<>();
+    private List<Loan> Loans = new ArrayList<>();
 
     public UUID getId() {
         return id;
@@ -74,19 +74,19 @@ public class books {
         this.isbn = isbn;
     }
 
-    public author getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(author author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
-    public List<loan> getLoans() {
-        return loans;
+    public List<Loan> getLoans() {
+        return Loans;
     }
 
-    public void setLoans(List<loan> loans) {
-        this.loans = loans;
+    public void setLoans(List<Loan> Loans) {
+        this.Loans = Loans;
     }
 }

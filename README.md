@@ -71,13 +71,13 @@ Controller → Service → Repository (JPA) → Banco de Dados
 
 | Método | Rota | Descrição | Status |
 |--------|------|-----------|--------|
-| `GET` | `/loans` | Lista todos os empréstimos | `200` |
-| `GET` | `/loans/{id}` | Busca empréstimo por ID | `200` |
-| `POST` | `/loans` | Registra novo empréstimo | `201` |
-| `PUT` | `/loans/{id}` | Atualiza empréstimo (ex.: devolução) | `200` |
-| `DELETE` | `/loans/{id}` | Remove empréstimo | `204` |
+| `GET` | `/Loans` | Lista todos os empréstimos | `200` |
+| `GET` | `/Loans/{id}` | Busca empréstimo por ID | `200` |
+| `POST` | `/Loans` | Registra novo empréstimo | `201` |
+| `PUT` | `/Loans/{id}` | Atualiza empréstimo (ex.: devolução) | `200` |
+| `DELETE` | `/Loans/{id}` | Remove empréstimo | `204` |
 
-**Parâmetros de listagem (`GET /loans`):**
+**Parâmetros de listagem (`GET /Loans`):**
 - `?status=ACTIVE|RETURNED|OVERDUE` `?bookId=` `?borrowerEmail=`
 - `?page=0&size=10&sort=loanDate,desc`
 

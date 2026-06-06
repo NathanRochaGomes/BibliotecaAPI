@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "authors")
-public class author {
+public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,7 +22,7 @@ public class author {
     private String email;
 
     @OneToMany(mappedBy = "author")
-    private List<books> books = new ArrayList<>();
+    private List<Books> books = new ArrayList<>();
 
     public UUID getId() {
         return id;
@@ -56,11 +56,11 @@ public class author {
         this.email = email;
     }
 
-    public List<books> getBooks() {
+    public List<Books> getBooks() {
         return books;
     }
 
-    public void setBooks(List<books> books) {
+    public void setBooks(List<Books> books) {
         this.books = books;
     }
 }
