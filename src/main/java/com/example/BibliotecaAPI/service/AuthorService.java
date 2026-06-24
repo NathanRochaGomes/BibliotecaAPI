@@ -3,6 +3,7 @@ package com.example.BibliotecaAPI.service;
 import com.example.BibliotecaAPI.dto.*;
 import com.example.BibliotecaAPI.entity.Author;
 import com.example.BibliotecaAPI.repository.AuthorRepository;
+import com.example.BibliotecaAPI.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,9 @@ public class AuthorService {
 
     @Autowired
     private AuthorRepository repository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     // Listar todos com paginação e filtro
     public Page<AuthorResponseDTO> getAll(String name, Pageable pageable) {
@@ -50,10 +54,14 @@ public class AuthorService {
         return new AuthorResponseDTO(updated.getId(), updated.getName());
     }
 
-    // Deletar
+    // Deletar com validação de segurança (Regra corporativa do PDF)
     public void delete(Long id) {
-        Author author = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Autor não encontrado."));
-        repository.delete(author);
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Autor não encontrado.");
+        }
+        if (bookRepository.existsByAuthorId(id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Não é permitido excluir um autor com livros vinculados.");
+        }
+        repository.deleteById(id);
     }
 }
