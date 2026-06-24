@@ -1,60 +1,48 @@
 package com.example.BibliotecaAPI.controller;
 
-import com.example.BibliotecaAPI.entity.Author;
+import com.example.BibliotecaAPI.dto.*;
+import com.example.BibliotecaAPI.service.AuthorService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.print.Pageable;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
 
-    private final AuthorService authorService;
+    @Autowired
+    private AuthorService service;
 
-    public AuthorController(AuthorService authorService) {
-        this.authorService = authorService;
-    }
-
-    // GET /authors?name=&page=0&size=10&sort=name,asc
     @GetMapping
-    public ResponseEntity<Page<AuthorResponseDTO>> listAll(
+    public ResponseEntity<Page<AuthorResponseDTO>> getAll(
             @RequestParam(required = false) String name,
-            Pageable pageable) {
-        Page<AuthorResponseDTO> result = authorService.findAll(name, pageable);
-        return ResponseEntity.ok(result);
+            @PageableDefault(size = 5, sort = "name") Pageable pageable) {
+        return ResponseEntity.ok(service.getAll(name, pageable));
     }
 
-    //GET /author/{id}
-    @GetMapping('/{id}')
-    public ResponseEntity<AuthorResponseDTO> findById(@PathVariable long id) {
-        AuthorResponseDTO author = authorService.findById(id);
-        return ResponseEntity.ok(author);
+    @GetMapping("/{id}")
+    public ResponseEntity<AuthorResponseDTO> getOne(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getOne(id));
     }
 
-    // POST /authors → 201 Created
     @PostMapping
-    public ResponseEntity<AuthorResponseDTO> create(@RequestBody @valid AuthorRequestDTO dto) {
-        AuthorResponseDTO created = authorService.create(dto);
-        URI location = URI.create("/authors/" + created.getId());
-        return ResponseEntity.created(location).body(created);
+    public ResponseEntity<AuthorResponseDTO> create(@RequestBody @Valid AuthorRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
-    // PUT /authors/{id} → 200 OK
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorResponseDTO> update(
-            @PathVariable Long id,
-            @RequestBody @Valid AuthorRequestDTO dto) {
-
-        AuthorResponseDTO updated = authorService.update(id, dto);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<AuthorResponseDTO> update(@PathVariable Long id, @RequestBody @Valid AuthorRequestDTO dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
-    // DELETE /authors/{id} → 204 No Content
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        authorService.delete(id);
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
