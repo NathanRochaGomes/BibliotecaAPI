@@ -9,11 +9,16 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/books")
 public class BookController {
-    @Autowired private BookService bookService;
+
+    @Autowired
+    private BookService bookService;
 
     @GetMapping
     public ResponseEntity<Page<BookResponseDTO>> getAll(
@@ -44,5 +49,25 @@ public class BookController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         bookService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // ENDPOINTS DA CARTA-DESAFIO
+    @PostMapping(value = "/{id}/cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadCover(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
+        bookService.saveCover(id, file);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Capa do livro enviada com sucesso!");
+    }
+
+    @GetMapping("/{id}/cover")
+    public ResponseEntity<byte[]> getCover(@PathVariable Long id) {
+        com.example.BibliotecaAPI.entity.Book book = bookService.getBookEntity(id);
+
+        if (book.getCoverImage() == null) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "Este livro não possui capa cadastrada.");
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(book.getCoverContentType()))
+                .body(book.getCoverImage());
     }
 }
